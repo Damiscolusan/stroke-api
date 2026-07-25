@@ -1,0 +1,24 @@
+name: Build Docker Image
+
+on:
+    push:
+        branches: [main]
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@v4
+
+            - name: Build Docker image
+              run: docker build -t stroke-api .
+
+            - name: Test container starts
+              run:  |
+                docker run -d -p 8000:8000 --name stroke-test stroke-api
+                sleep 10
+                curl --fail http://localhost:8000/ || exit 1
+                docker stop stroke-test
+                
