@@ -3,7 +3,7 @@
 FROM python:3.10-slim 
 
 # Set the working directory inside the container
-WORKDIR /app
+WORKDIR /code
 
 # Copy requirements first to leverage Docker layer caching
 COPY requirements.txt .
