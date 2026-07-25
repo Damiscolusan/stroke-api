@@ -23,3 +23,51 @@ jobs:
                 curl --fail http://localhost:8000/ || exit 1
                 docker stop stroke-test
 
+
+            # this is the NEW step. everything above only checked that the
+            # server switched on, this step checks that the model behind it
+            # actually gives a correct, sensible answer
+
+            - name: Test prediction endpoint
+              run: |
+                # send one real, fake paient's data to /predict, exactly like
+                # you'd type into Swagger UI by hand, but automated here.
+                # response=$(...) captures whatever comes back into a variable
+                # called response, so the next lines can inspect it
+                response=$(curl -s -X POST http://localhost:8000/predict \
+                    -H "Content-Type: application/json" \
+                    -d '{
+                      "gender":"Male",
+                      "age": 67,
+                      "hypertension":0,
+                      "heart_disease": 1,
+                      "ever_married": "Yes",
+                      "residence_type": "Urban",
+                      "work_type": "Private",
+                      "avg_glucose_level": 228.69,
+                      "bmi": 36.6,
+                      "smoking_status": "formerly smoked",
+                      "model_choice": "Baseline"
+                    }')
+                    
+                    # print the raw response, so if this step fails later,
+                    # the Actions log shows you exactly what came back
+                echo "Response: $Response"    
+                    
+                # pipe that response into a small Python script. this checks
+                # two real things: that the probability is a genuine number
+                # between 0 and 1, and that the risk label is one of the two
+                # values your code is actually supposed to produce. if either
+                # check fails, Python raises an error and this whole step
+                # fails, red X, same as any other broken step    
+                
+                echo "$response" | python3 -c "
+                import json, sys
+                data = json.load(sys.stdin)
+                prob = data['stroke_probability']
+                assert 0 <= prob <=1, f'Probability out of range: {prob}'
+                assert data['risk_label'] in ['Higher Risk', 'Lower Risk']
+                print('Prediction test passed:', data)
+                "
+                    
+                    
