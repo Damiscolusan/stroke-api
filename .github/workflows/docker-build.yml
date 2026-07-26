@@ -52,7 +52,7 @@ jobs:
                     
                     # print the raw response, so if this step fails later,
                     # the Actions log shows you exactly what came back
-                echo "Response: $Response"    
+                echo "Response: $response"    
                     
                 # pipe that response into a small Python script. this checks
                 # two real things: that the probability is a genuine number
