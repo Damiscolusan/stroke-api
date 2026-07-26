@@ -14,6 +14,8 @@ $body = @{
 
 Invoke-RestMethod -Uri "http://localhost:8000/predict" -Method Post -Body $body -ContentType "application/json"
 
+
 git add .
-git commit -m "fix container stopping before prediction test could run"
+git commit -m "add real health check verifying model objects loaded correctly"
 git push
+
