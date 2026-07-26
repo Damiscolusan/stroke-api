@@ -46,3 +46,21 @@ def preprocess_and_predict(patient):
     probability = float(selected_model.predict_proba(input_df)[0][1])
     
     return probability
+
+MODEL_METADATA = {
+    
+    "baseline": {
+        "recall" : 0.133,
+        "precision" : 0.20,
+        "f1" : 0.16,
+        "trained_on": "Fedesoriano stroke dataset"
+    },
+    
+    "tuned": {
+        "recall": 0.45,
+        "precision": 0.13,
+        "f1": 0.20,
+        "trained_on": "Fedesoriano stroke dataset"
+    }
+    
+}
