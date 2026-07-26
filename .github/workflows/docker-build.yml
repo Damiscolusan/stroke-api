@@ -21,7 +21,7 @@ jobs:
                 sleep 20
                 docker logs stroke-test
                 curl --fail http://localhost:8000/ || exit 1
-                docker stop stroke-test
+                
 
 
             # this is the NEW step. everything above only checked that the
@@ -70,4 +70,6 @@ jobs:
                 print('Prediction test passed:', data)
                 "
                     
-                    
+            - name: Stop test container
+              if: always()
+              run: docker stop stroke-test        
